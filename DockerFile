@@ -1,0 +1,26 @@
+# Use an official PHP image as the base
+FROM php:8.1-fpm
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    && docker-php-ext-install pdo pdo_mysql
+
+# Install Composer (copying from official Composer image)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set the working directory to /var/www
+WORKDIR /var/www/html
+
+# Copy the application files to the container
+COPY . .
+
+# Set permissions (if necessary)
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose the necessary port (optional)
+EXPOSE 9000
