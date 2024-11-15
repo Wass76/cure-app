@@ -30,26 +30,25 @@ class PdfLectureController extends Controller
         return $this->pdfLectureService->downloadPdfLecture($id);
     }
 
-    // public function store(Request $request)
-    // {
-    //     $data = $request->validate([
-    //         'lecture_id' => 'required|exists:lectures,id',
-    //         'file_name' => 'required|string',
-    //         'file_size' => 'required|integer',
-    //     ]);
-
-    //     $pdfLecture = $this->pdfLectureService->createPdfLecture($data);
-    //     return response()->json($pdfLecture, 201);
-    // }
-
-    public function update(Request $request, $id)
+    public function store(Request $request, $lectureId)
     {
-        $data = $request->validate([
-            'file_name' => 'sometimes|required|string',
-            'file_size' => 'sometimes|required|integer',
+        $request->validate([
+            'pdf_file' => 'required|file|mimes:pdf'
         ]);
 
-        $pdfLecture = $this->pdfLectureService->updatePdfLecture($id, $data);
+        // echo $lectureId;
+
+        $pdfLecture = $this->pdfLectureService->addPdfLecture($lectureId, $request->file('pdf_file'));
+        return response()->json($pdfLecture, 201);
+    }
+
+    public function update(Request $request, $id , $lectureId)
+    {
+        $request->validate([
+            'pdf_file' => 'required|file|mimes:pdf'
+        ]);
+
+        $pdfLecture = $this->pdfLectureService->updatePdfLecture($id, $request->file('pdf_file'), $lectureId);
         return response()->json($pdfLecture);
     }
 

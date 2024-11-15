@@ -1,39 +1,62 @@
 version: '3.8'
 services:
-  app:
-    image: php:8.1-fpm  # Adjust PHP version to match your project
-    container_name: cure_app
-    volumes:
-      - .:/var/www/html
-    working_dir: /var/www/html
-    environment:
-      - DB_HOST=localhost
-      - DB_PORT=3306
-      - DB_DATABASE=national_medical_exam
-      - DB_USERNAME=root
-      - DB_PASSWORD=
-
-  web:
-    image: nginx:alpine
-    container_name: laravel_web
-    ports:
-      - "8000:80"
-    volumes:
-      - .:/var/www/html
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-
-  db:
-    image: mysql:8.0  # Adjust MySQL version as needed
-    container_name: cure_db
-    environment:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_DATABASE: national_medical_exam
-      MYSQL_USER: root
-      MYSQL_PASSWORD:
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
+    app:
+        image: 'php:8.1-fpm'
+        container_name: cure_app
+        volumes:
+            - '.:/var/www/html'
+        working_dir: /var/www/html
+        environment:
+            - DB_HOST=localhost
+            - DB_PORT=3306
+            - DB_DATABASE=national_medical_exam
+            - DB_USERNAME=root
+            - DB_PASSWORD=
+    web:
+        image: 'nginx:alpine'
+        container_name: laravel_web
+        ports:
+            - '8000:80'
+        volumes:
+            - '.:/var/www/html'
+            - './nginx/default.conf:/etc/nginx/conf.d/default.conf'
+    db:
+        image: 'mysql:8.0'
+        container_name: cure_db
+        environment:
+            MYSQL_ROOT_PASSWORD: null
+            MYSQL_DATABASE: national_medical_exam
+            MYSQL_USER: root
+            MYSQL_PASSWORD: null
+        ports:
+            - '3306:3306'
+        volumes:
+            - 'db_data:/var/lib/mysql'
+    mysql:
+        image: 'mysql/mysql-server:8.0'
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'sail-mysql:/var/lib/mysql'
+            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
+            retries: 3
+            timeout: 5s
 volumes:
-  db_data:
+    db_data: null
+    sail-mysql:
+        driver: local

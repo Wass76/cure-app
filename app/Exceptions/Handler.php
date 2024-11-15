@@ -128,7 +128,9 @@ class Handler extends ExceptionHandler
         if ($exception instanceof HttpException) {
             return $exception->render();
         }
-
+        if($exception instanceof DublicatedFileNameException){
+            return $exception->render();
+        }
         // Default error handler for unexpected exceptions (500)
         return response()->json([
             'error' => 'Server error',

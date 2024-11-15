@@ -48,26 +48,24 @@ class LectureController extends Controller
     }
 
     public function addAudioLecture(Request $request, $lectureId)
-{
-    $request->validate([
-        'audio_file' => 'required|file|mimes:mp3,wav,aac' // Adjust allowed formats as needed
-    ]);
+    {
+        $request->validate([
+            'audio_file' => 'required|file|mimes:mp3,wav,aac' // Adjust allowed formats as needed
+        ]);
 
-    $audioLecture = $this->lectureService->addAudioLecture($lectureId, $request->file('audio_file'));
-    return response()->json($audioLecture, 201);
-}
+        $audioLecture = $this->lectureService->addAudioLecture($lectureId, $request->file('audio_file'));
+        return response()->json($audioLecture, 201);
+    }
 
-public function addPdfLecture(Request $request, $lectureId)
-{
-    // echo $lectureId;
+// public function addPdfLecture(Request $request, $lectureId)
+//     {
+//         $request->validate([
+//             'pdf_file' => 'required|file|mimes:pdf'
+//         ]);
 
-    $request->validate([
-        'pdf_file' => 'required|file|mimes:pdf'
-    ]);
-
-    $pdfLecture = $this->lectureService->addPdfLecture($lectureId, $request->file('pdf_file'));
-    return response()->json($pdfLecture, 201);
-}
+//         $pdfLecture = $this->lectureService->addPdfLecture($lectureId, $request->file('pdf_file'));
+//         return response()->json($pdfLecture, 201);
+//     }
 
     public function update(Request $request, $id)
     {

@@ -15,6 +15,10 @@ class PdfLectureRepository
         return PdfLecture::find($id);
     }
 
+    public function findByName(string $name ){
+          return PdfLecture::where('file_name' , $name)->get();
+    }
+
     public function create(array $data)
     {
         $pdfLecture = PdfLecture::create($data);

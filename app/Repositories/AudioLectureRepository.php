@@ -12,7 +12,11 @@ class AudioLectureRepository
 
     public function findById($id)
     {
-        return AudioLecture::findOrFail($id);
+        return AudioLecture::find($id);
+    }
+
+    public function findByName(string $name){
+        return AudioLecture::where('file_name' , $name)->get();
     }
 
     public function create(array $data)

@@ -25,17 +25,17 @@ class AudioLectureController extends Controller
         $audioLecture = $this->audioLectureService->getAudioLectureById($id);
         return response()->json($audioLecture);
     }
+    public function downloadAudioFile($id){
+        return $this->audioLectureService->downloadAudioLecture($id);
+    }
 
-    public function store(Request $request)
+    public function addAudioLecture(Request $request, $lectureId)
     {
-        $data = $request->validate([
-            'lecture_id' => 'required|exists:lectures,id',
-            'file_name' => 'required|string',
-            'file_size' => 'required|integer',
-            'duration' => 'required|integer',
+        $request->validate([
+            'audio_file' => 'required|file|mimes:mp3,wav,aac' // Adjust allowed formats as needed
         ]);
 
-        $audioLecture = $this->audioLectureService->createAudioLecture($data);
+        $audioLecture = $this->audioLectureService->addAudioLecture($lectureId, $request->file('audio_file'));
         return response()->json($audioLecture, 201);
     }
 

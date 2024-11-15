@@ -8,8 +8,9 @@ use App\Repositories\PdfLectureRepository;
 use App\Models\Code;
 use App\Exceptions\ModelNotFoundException;
 use Exception;
-use Illuminate\Support\Facades\Storage;
+use Storage;
 use getID3; // Assuming getID3 library is installed
+
 
 
 class LectureService
@@ -104,35 +105,7 @@ class LectureService
     }
 
     // Add a PDF file to an existing Lecture
-    public function addPdfLecture(int $lectureId, $file)
-    {
-        try {
-            // echo $lectureId;
-            $lecture = $this->lectureRepository->findById($lectureId);
-            if (!$lecture) throw new ModelNotFoundException("Lecture not found.");
 
-
-            // Generate a unique file name and store the file
-            $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('public/pdf_lectures', $fileName);
-            // echo $lectureId;
-
-            // Calculate file size
-            $fileSize = Storage::size($path);
-            // echo $fileSize + " " + $fileName ;
-
-            // Create the PdfLecture record
-            return $this->pdfLectureRepository->create([
-                'file_name' => $fileName,
-                'file_size' => $fileSize,
-                'lecture_id' => $lectureId
-            ]);
-        } catch (ModelNotFoundException $e) {
-            throw new Exception($e->getMessage(), 404);
-        } catch (Exception $e) {
-            throw new Exception("Failed to add PDF lecture: " . $e->getMessage(), 500);
-        }
-    }
 
     public function updateLecture($id, array $data)
     {
