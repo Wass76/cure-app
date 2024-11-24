@@ -36,6 +36,12 @@ class LectureController extends Controller
         return response()->json(data: $this->lectureService->getLectureById($id));
     }
 
+    public function getBySubjectId($subjectId){
+
+        return response()->json($this->lectureService->getLecturesBySubject($subjectId));
+
+    }
+
     public function createLecture(Request $request)
     {
         $data = $request->validate([

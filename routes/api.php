@@ -61,6 +61,7 @@ Route::prefix('v1')->group(function () {
     Route::get('lectures', [LectureController::class, 'index']);
     Route::post('lectures', [LectureController::class, 'createLecture']);
     Route::get('lectures/{id}', [LectureController::class, 'show']);
+    Route::get('lectures/get-by-subject/{subjectId}' , [LectureController::class , 'getBySubjectId']);
     Route::put('lectures/{id}', [LectureController::class, 'update']);
     Route::delete('lectures/{id}', [LectureController::class, 'destroy']);
 });

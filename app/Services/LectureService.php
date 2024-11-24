@@ -7,6 +7,7 @@ use App\Repositories\AudioLectureRepository;
 use App\Repositories\PdfLectureRepository;
 use App\Models\Code;
 use App\Exceptions\ModelNotFoundException;
+use App\Repositories\SubjectRepository;
 use Exception;
 use Storage;
 use getID3; // Assuming getID3 library is installed
@@ -18,15 +19,18 @@ class LectureService
     protected $lectureRepository;
     protected $pdfLectureRepository;
     protected $audioLectureRepository;
+    protected $subjectRepository;
 
     public function __construct(
         LectureRepository $lectureRepository,
         AudioLectureRepository $audioLectureRepository,
-        PdfLectureRepository $pdfLectureRepository
+        PdfLectureRepository $pdfLectureRepository,
+        SubjectRepository $subjectRepository
     ) {
         $this->lectureRepository = $lectureRepository;
         $this->audioLectureRepository = $audioLectureRepository;
         $this->pdfLectureRepository = $pdfLectureRepository;
+        $this->subjectRepository = $subjectRepository;
     }
 
     public function getAllLectures()
@@ -61,6 +65,19 @@ class LectureService
     //         throw new Exception("Failed to create lecture.", 500);
     //     }
     // }
+
+    public function getLecturesBySubject($id){
+
+        $subject = $this->subjectRepository->findById($id);
+        if(!$subject){
+            throw new ModelNotFoundException("There is no subject with ID {$id}.");
+        }
+
+        $lectures = $this->lectureRepository->findBySubject($id);
+        return $lectures;
+        // if()
+
+    }
 
     public function createLecture(array $data)
     {

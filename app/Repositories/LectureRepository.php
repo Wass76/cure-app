@@ -18,6 +18,11 @@ class LectureRepository
         return Lecture::find($id);
     }
 
+    public function findBySubject($id)
+    {
+        return Lecture::where('subject_id' , $id)->get();
+    }
+
     public function create(array $data)
     {
         return Lecture::create($data);
