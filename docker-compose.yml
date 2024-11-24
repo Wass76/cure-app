@@ -3,6 +3,7 @@ services:
   app:
     build:
       context: .
+      dockerfile: Dockerfile
     container_name: cure_app
     volumes:
       - '.:/var/www/html'
