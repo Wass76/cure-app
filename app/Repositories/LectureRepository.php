@@ -15,6 +15,7 @@ class LectureRepository
 
     public function findById($id)
     {
+        // echo $id;
         return Lecture::find($id);
     }
 

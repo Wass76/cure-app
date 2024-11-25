@@ -31,9 +31,11 @@ class AudioLectureController extends Controller
 
     public function addAudioLecture(Request $request, $lectureId)
     {
+        // echo $lectureId;
         $request->validate([
             'audio_file' => 'required|file|mimes:mp3,wav,aac' // Adjust allowed formats as needed
         ]);
+        // echo $lectureId;
 
         $audioLecture = $this->audioLectureService->addAudioLecture($lectureId, $request->file('audio_file'));
         return response()->json($audioLecture, 201);

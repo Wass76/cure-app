@@ -82,13 +82,16 @@ class AudioLectureService
     {
         try {
             $lecture = $this->lectureRepository->findById($lectureId);
-            if (!$lecture) throw new ModelNotFoundException("Lecture not found.");
+            if (!$lecture)
+             throw new ModelNotFoundException("Lecture not found.");
+
+            // echo $lectureId;
 
             $subject = $this->subjectRepository->findById($lecture['subject_id']);
             if (!$subject) throw new ModelNotFoundException("Lecture not found.");
 
             $fileName = $lecture['name'] .'-' . $subject['name'] . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('public/pdf_lectures', $fileName);
+            $path = $file->storeAs('public/audio_lectures', $fileName);
 
             $existedName = $this->audioLectureRepository->findByName($fileName);
             if($existedName->isNotEmpty()){
