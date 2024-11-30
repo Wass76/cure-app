@@ -16,6 +16,9 @@ services:
       - DB_PASSWORD=password
     networks:
       - laravel
+    depends_on:
+      db:
+        condition: service_healthy  # Wait until the DB is ready
 
   web:
     image: 'nginx:alpine'
@@ -29,7 +32,6 @@ services:
       - laravel
     depends_on:
       - app
-      - db
 
   db:
     image: 'mysql:5.7'
@@ -42,13 +44,17 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - db_data:/var/lib/mysql  # Use a named volume for persistence
+      - db_data:/var/lib/mysql
     restart: unless-stopped
     networks:
       - laravel
+    healthcheck:  # Ensure DB is ready before starting app
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      retries: 5
+      timeout: 5s
 
 volumes:
-  db_data:  # Named volume for database persistence
+  db_data:
 
 networks:
   laravel:
