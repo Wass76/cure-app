@@ -41,20 +41,22 @@ Route::prefix('v1')->group(function () {
     Route::post('/admin-login', [AuthController::class, 'loginForAdmin']);
 
 
-    Route::post('login' , [AuthController::class , 'registerOrLogin']);
+    // Route::post('login' , [AuthController::class , 'registerOrLogin']);
+    Route::get('subjects', [SubjectController::class, 'index']);
+    Route::post('codes', [CodeController::class, 'generateCodes']);
+
+
 
     Route::middleware('auth:api')->group(function () {
 
     // Routes for Code
     Route::get('codes', [CodeController::class, 'index']);
-    Route::post('codes', [CodeController::class, 'generateCodes']);
     Route::post('codes/to-user' , [CodeController::class , 'assignCodeToUser']);
     Route::get('codes/{id}', [CodeController::class, 'show']);
     Route::put('codes/{id}', [CodeController::class, 'update']);
     Route::delete('codes/{id}', [CodeController::class, 'destroy']);
 
     // Routes for Subjects
-    Route::get('subjects', [SubjectController::class, 'index']);
     Route::post('subjects', [SubjectController::class, 'store']);
     Route::get('subjects/by-codes' , [SubjectController::class , 'getSubjectsForUser']);
     Route::get('subjects/{id}', [SubjectController::class, 'show']);
