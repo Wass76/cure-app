@@ -76,16 +76,17 @@ class PdfLectureService
         return response()->download($filePath, $pdfLecture->file_name);
     }
 
-
 public function addPdfLecture(int $lectureId, $file)
     {
         try {
             // echo $lectureId;
             $lecture = $this->lectureRepository->findById($lectureId);
-            if (!$lecture) throw new ModelNotFoundException("Lecture not found.");
+            if (!$lecture)
+             throw new ModelNotFoundException("Lecture not found.");
 
             $subject = $this->subjectRepository->findById($lecture['subject_id']);
-            if (!$subject) throw new ModelNotFoundException("Lecture not found.");
+            if (!$subject)
+             throw new ModelNotFoundException("Lecture not found.");
 
             $fileName = $lecture['name'] .'-' . $subject['name'] . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('public/pdf_lectures', $fileName);
@@ -107,7 +108,7 @@ public function addPdfLecture(int $lectureId, $file)
             return $this->formatPdfLecture($pdfLecture);
 
         } catch (ModelNotFoundException $e) {
-            throw new Exception($e->getMessage(), 404);
+            throw new ModelNotFoundException($e->getMessage(), 404);
         }
         catch(DublicatedFileNameException $e){
             throw new DublicatedFileNameException($e->getMessage());

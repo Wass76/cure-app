@@ -1,6 +1,5 @@
 <?php
 
-// app/Exceptions/ModelNotFoundException.php
 namespace App\Exceptions;
 
 use Exception;

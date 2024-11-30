@@ -2,13 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\Lecture;
+use App\Models\Subject;
 use App\Repositories\LectureRepository;
 use App\Repositories\AudioLectureRepository;
 use App\Repositories\PdfLectureRepository;
 use App\Models\Code;
 use App\Exceptions\ModelNotFoundException;
 use App\Repositories\SubjectRepository;
+use Auth;
 use Exception;
+use Laravel\Passport\Exceptions\AuthenticationException;
 use Storage;
 use getID3; // Assuming getID3 library is installed
 
@@ -75,8 +79,6 @@ class LectureService
 
         $lectures = $this->lectureRepository->findBySubject($id);
         return $lectures;
-        // if()
-
     }
 
     public function createLecture(array $data)
@@ -89,39 +91,40 @@ class LectureService
     }
 
     // Add an audio file to an existing Lecture
-    public function addAudioLecture(int $lectureId, $file)
-    {
-        try {
-            $lecture = $this->lectureRepository->findById($lectureId);
-            if (!$lecture) throw new ModelNotFoundException("Lecture not found.");
+    // public function addAudioLecture(int $lectureId, $file)
+    // {
+    //     try {
+    //         $lecture = $this->lectureRepository->findById($lectureId);
+    //         if (!$lecture) throw new ModelNotFoundException("Lecture not found.");
 
-            // Generate a unique file name and store the file
-            $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('public/audio_lectures', $fileName);
+    //         // Generate a unique file name and store the file
+    //         $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
+    //         $path = $file->storeAs('public/audio_lectures', $fileName);
 
-            // Calculate file size
-            $fileSize = Storage::size($path);
+    //         // Calculate file size
+    //         $fileSize = Storage::size($path);
 
-            // Calculate duration using getID3
-            $getID3 = new getID3();
-            $fileInfo = $getID3->analyze(storage_path('app/' . $path));
-            $duration = $fileInfo['playtime_seconds'] ?? 0;
+    //         // Calculate duration using getID3
+    //         $getID3 = new getID3();
+    //         $fileInfo = $getID3->analyze(storage_path('app/' . $path));
+    //         $duration = $fileInfo['playtime_seconds'] ?? 0;
 
-            // Create the AudioLecture record
-            return $this->audioLectureRepository->create([
-                'file_name' => $fileName,
-                'file_size' => $fileSize,
-                'duration' => $duration,
-                'lecture_id' => $lectureId
-            ]);
-        } catch (ModelNotFoundException $e) {
-            throw new Exception($e->getMessage(), 404);
-        } catch (Exception $e) {
-            throw new Exception("Failed to add audio lecture: " . $e->getMessage(), 500);
-        }
-    }
+    //         // Create the AudioLecture record
+    //         return $this->audioLectureRepository->create([
+    //             'file_name' => $fileName,
+    //             'file_size' => $fileSize,
+    //             'duration' => $duration,
+    //             'lecture_id' => $lectureId
+    //         ]);
+    //     } catch (ModelNotFoundException $e) {
+    //         throw new Exception($e->getMessage(), 404);
+    //     } catch (Exception $e) {
+    //         throw new Exception("Failed to add audio lecture: " . $e->getMessage(), 500);
+    //     }
+    // }
 
-    // Add a PDF file to an existing Lecture
+
+
 
 
     public function updateLecture($id, array $data)

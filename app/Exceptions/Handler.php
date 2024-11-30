@@ -9,6 +9,10 @@ use App\Exceptions\NotFoundHttpException;
 use App\Exceptions\MethodNotAllowedHttpException;
 use App\Exceptions\HttpException;
 use Throwable;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Auth\AuthenticationException;
+
+
 
 class Handler extends ExceptionHandler
 {
@@ -131,6 +135,17 @@ class Handler extends ExceptionHandler
         if($exception instanceof DublicatedFileNameException){
             return $exception->render();
         }
+        if ($exception instanceof AuthenticationException) {
+            return response()->json([
+                'message' => 'Unauthorized access. Please provide a valid token.'
+            ], Response::HTTP_UNAUTHORIZED); // 401 status code
+        }
+
+        // return response()->json(
+        //     parent::render($request,$exception)
+        // );
+
+
         // Default error handler for unexpected exceptions (500)
         return response()->json([
             'error' => 'Server error',

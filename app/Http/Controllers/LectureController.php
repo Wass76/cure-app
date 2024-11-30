@@ -53,15 +53,15 @@ class LectureController extends Controller
         return response()->json($lecture, 201);
     }
 
-    public function addAudioLecture(Request $request, $lectureId)
-    {
-        $request->validate([
-            'audio_file' => 'required|file|mimes:mp3,wav,aac' // Adjust allowed formats as needed
-        ]);
+    // public function addAudioLecture(Request $request, $lectureId)
+    // {
+    //     $request->validate([
+    //         'audio_file' => 'required|file|mimes:mp3,wav,aac' // Adjust allowed formats as needed
+    //     ]);
 
-        $audioLecture = $this->lectureService->addAudioLecture($lectureId, $request->file('audio_file'));
-        return response()->json($audioLecture, 201);
-    }
+    //     $audioLecture = $this->lectureService->addAudioLecture($lectureId, $request->file('audio_file'));
+    //     return response()->json($audioLecture, 201);
+    // }
 
 // public function addPdfLecture(Request $request, $lectureId)
 //     {

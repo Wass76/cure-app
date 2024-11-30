@@ -17,16 +17,25 @@ class SubjectRepository
     {
         return Subject::find($id);
     }
-    public function getAllSubjectsByCode(int $codeId)
+    // public function getAllSubjectsByCode(int $codeId)
+    // {
+    //     $code = Code::find($codeId);
+
+    //     if (!$code) {
+    //         throw new ModelNotFoundException("There is no such code" , 404);
+    //     }
+    //     return $code->subjects;
+    // }
+
+    public function getSubjectsByUserCodes($userId)
     {
-        $code = Code::find($codeId);
-
-        if (!$code) {
-            throw new ModelNotFoundException("There is no such code" , 404);
-        }
-        return $code->subjects;
+        return Subject::whereHas('codes', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->distinct()
+            ->get(['id', 'name', 'type', 'created_at', 'updated_at'])
+            ->makeHidden('pivot');
     }
-
 
     public function create(array $data)
     {

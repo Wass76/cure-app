@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Repositories\CodeRepository;
 use App\Exceptions\ModelNotFoundException;
+use Auth;
 use Exception;
 use App\Models\Subject;
-use Nette\Utils\Random;
+use Illuminate\Auth\AuthenticationException;
+use Request;
 
 class CodeService
 {
@@ -32,36 +34,59 @@ class CodeService
     }
 
     public function createCode(array $data)
-{
-    try {
-        // Fetch the specified subjects
-        $subjects = Subject::whereIn('id', $data['subjects'])->get();
+    {
+        try {
+            // Fetch the specified subjects
+            $subjects = Subject::whereIn('id', $data['subjects'])->get();
 
-        // Check if all subjects are found
-        if ($subjects->count() !== count($data['subjects'])) {
+            // Check if all subjects are found
+            if ($subjects->count() !== count($data['subjects'])) {
+                throw new ModelNotFoundException("One or more specified subjects do not exist.");
+            }
+
+            $createdCodes = [];
+            // echo 1;
+
+            for ($i = 0; $i < $data['number_of_codes']; $i++) {
+                $activationCode = bin2hex(random_bytes(12));
+                // echo $i;
+                $code = $this->codeRepository->create(['activation_code' => $activationCode]);
+
+                $code->subjects()->attach($data['subjects']);
+                $createdCodes[] = $code;
+            }
+
+            return $createdCodes;
+
+        } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("One or more specified subjects do not exist.");
+        } catch (Exception $e) {
+            throw new Exception("Failed to create codes." . $e->getMessage()) ;
         }
-
-        $createdCodes = [];
-
-        // Generate the specified number of codes
-        for ($i = 0; $i < $data['number_of_codes']; $i++) {
-            $activationCode = bin2hex(random_bytes(12));
-            $code = $this->codeRepository->create(['activation_code' => $activationCode]);
-
-            // Attach subjects to the new code
-            $code->subjects()->attach($data['subjects']);
-            $createdCodes[] = $code;
-        }
-
-        return $createdCodes;
-
-    } catch (ModelNotFoundException $e) {
-        throw new ModelNotFoundException("One or more specified subjects do not exist.");
-    } catch (Exception $e) {
-        throw new Exception("Failed to create codes.");
     }
-}
+
+    public function addCodeToUser( $code){
+        // echo $code;
+        $user = Auth::user();
+        if (!$user) {
+            throw new AuthenticationException("There is no authenticated user");
+        }
+        try{
+            $objectCode = $this->codeRepository->findValidCode($code);
+            $this->codeRepository->assignCodeToUser($objectCode, $user->id);
+
+            return response()->json(
+                [
+                    'message' => 'Assign Code To User done successfully'
+                ]
+                );
+        }
+        catch (Exception $e) {
+            throw new Exception("Failed Assign Code To User" . $e->getMessage(), 500);
+        }
+    }
+
+
 
 
 

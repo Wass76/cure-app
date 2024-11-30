@@ -20,10 +20,10 @@ class SubjectController extends Controller
         return response()->json($subjects);
     }
 
-    public function getAllSubjectsByCode(){
-         $code = 'ssss';
-        return $this->subjectService->getAllSubjectsByCode($code);
-    }
+    // public function getAllSubjectsByCode(){
+    //      $code = 'ssss';
+    //     return $this->subjectService->getAllSubjectsByCode($code);
+    // }
 
     public function show($id)
     {
@@ -31,11 +31,17 @@ class SubjectController extends Controller
         return response()->json($subject);
     }
 
+    public function getSubjectsForUser(){
+        return $this->subjectService->getSubjectsForUser();
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string',
             'type' => 'required|in:1,2',
+        ], [
+            'type.in' => 'The type field must be either 1 or 2.',
         ]);
 
         $subject = $this->subjectService->createSubject($data);

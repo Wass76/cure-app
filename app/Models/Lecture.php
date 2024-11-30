@@ -10,6 +10,11 @@ class Lecture extends Model
     use HasFactory;
     protected $fillable = ['name', 'subject_id'];
 
+
+    public function subject(){
+        return $this->belongsTo(Subject::class , 'subject_id');
+    }
+
     public function audioLecture()
     {
         return $this->hasOne(AudioLecture::class);

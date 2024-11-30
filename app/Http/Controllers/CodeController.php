@@ -59,6 +59,16 @@ public function generateCodes(Request $request)
 }
 
 
+    public function assignCodeToUser(Request $request){
+        // echo $request->code;
+
+        $code = $request->code;
+
+        return $this->codeService->addCodeToUser($code);
+
+    }
+
+
     public function update(Request $request, $id)
     {
         $data = $request->validate([

@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('codes', function (Blueprint $table) {
             $table->id();
             $table->string("activation_code")->unique()->nullable(false);
+            $table->boolean('is_taken')->default(false);
+            $table->integer('user_id')->references(column: 'id')->on('user')->onDelete('cascade')->nullable(true);
             $table->timestamps();
         });
     }
