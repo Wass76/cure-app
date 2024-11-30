@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;  // Make sure to import the User model
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,23 +12,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Create SuperAdmin if it doesn't already exist
+        User::firstOrCreate(
+            ['phoneNumber' => 'SuperAdmin'],
+            [
+                'password' => 'Password!1',
+                'role' => 'admin',
+            ]
+        );
 
-        \App\Models\User::factory()->create([
-            'phoneNumber' => 'SuperAdmin',
-            'password' => 'Password!1',
-            'role' => 'admin',
-        ]);
-
-        \App\Models\User::factory()->create([
-            'phoneNumber' => 'admin',
-            'password' => 'Password!1',
-            'role' => 'admin'
-        ]);
-
-
-
-
-
+        // Create admin if it doesn't already exist
+        User::firstOrCreate(
+            ['phoneNumber' => 'admin'],
+            [
+                'password' => 'Password!1',
+                'role' => 'admin',
+            ]
+        );
     }
 }
