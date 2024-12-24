@@ -73,6 +73,20 @@ class LectureController extends Controller
 //         return response()->json($pdfLecture, 201);
 //     }
 
+public function getLectureCount(Request $request, $subjectId)
+{
+        // Call the service to get the lecture count for the subject
+        $count = $this->lectureService->getLectureCountForSubject($subjectId);
+
+        return response()->json([
+            'message' => 'Lecture count fetched successfully',
+            'data' => [
+                'subject_id' => $subjectId,
+                'lecture_count' => $count
+            ]
+        ], 200);
+    }
+
     public function update(Request $request, $id)
     {
         $data = $request->validate([

@@ -64,4 +64,14 @@ class SubjectController extends Controller
         $this->subjectService->deleteSubject($id);
         return response()->json(null, 204);
     }
+
+    public function getUserCountBySubject()
+    {            // Get the count of users per subject
+            $userCounts = $this->subjectService->getUserCountBySubject();
+
+            return response()->json([
+                'message' => 'User count for each subject fetched successfully',
+                'data' => $userCounts
+            ], 200);
+    }
 }

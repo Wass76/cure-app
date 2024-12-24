@@ -84,4 +84,11 @@ class SubjectService
         }
         return $this->subjectRepository->delete($subject);
     }
+
+
+    public function getUserCountBySubject()
+    {
+        // Fetch the count of users per subject from the repository
+        return $this->subjectRepository->countUsersBySubject();
+    }
 }

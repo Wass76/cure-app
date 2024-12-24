@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e0bbfdad4910843edd3e56bd32f0ed12",
     "packages": [
         {
             "name": "brick/math",
@@ -1273,7 +1272,6 @@
                 "egulias/email-validator": "^3.2.1|^4.0",
                 "ext-ctype": "*",
                 "ext-filter": "*",
-                "ext-hash": "*",
                 "ext-mbstring": "*",
                 "ext-openssl": "*",
                 "ext-session": "*",
@@ -1334,7 +1332,6 @@
                 "illuminate/encryption": "self.version",
                 "illuminate/events": "self.version",
                 "illuminate/filesystem": "self.version",
-                "illuminate/hashing": "self.version",
                 "illuminate/http": "self.version",
                 "illuminate/log": "self.version",
                 "illuminate/macroable": "self.version",
@@ -4100,7 +4097,7 @@
             "keywords": [
                 "array",
                 "collection",
-                "hash",
+
                 "map",
                 "queue",
                 "set"

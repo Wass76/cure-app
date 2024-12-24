@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Code;
 use App\Exceptions\ModelNotFoundException;
+use DB;
 
 class CodeRepository
 {
@@ -50,6 +51,23 @@ class CodeRepository
         'user_id' => null
     ]);
 }
+
+    public function statistics(int $type)
+    {
+        return DB::table('users')
+            ->join('codes', 'users.id', '=', 'codes.user_id')
+            ->join('code_subject', 'codes.id', '=', 'code_subject.code_id')
+            ->join('subjects', 'code_subject.subject_id', '=', 'subjects.id')
+            ->where('subjects.type', $type)
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('subjects as sub')
+                    ->join('code_subject as cs', 'sub.id', '=', 'cs.subject_id')
+                    ->whereRaw('cs.code_id = codes.id');
+            })
+            ->distinct('users.id') // Ensure unique user count
+            ->count('users.id');
+    }
 
 
     public function update(Code $code, array $data)

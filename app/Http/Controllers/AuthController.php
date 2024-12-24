@@ -40,4 +40,13 @@ class AuthController extends Controller
         return response()->json($response['data'], $response['status']);
 
     }
+
+    public function getAllUserInfo()
+    {
+        // Call the service layer
+        $userInfo = $this->authService->getAllUserInfo();
+
+        // Return a JSON response
+        return response()->json($userInfo);
+    }
 }

@@ -125,6 +125,15 @@ class LectureService
 
 
 
+    public function getLectureCountForSubject(int $subjectId)
+    {
+        $subject = $this->subjectRepository->findById($subjectId);
+        if(!$subject){
+            throw new ModelNotFoundException("There is no subject with id " . $subjectId);
+        }
+        // Get the lecture count from the repository
+        return $this->lectureRepository->countLecturesBySubject($subjectId);
+    }
 
 
     public function updateLecture($id, array $data)

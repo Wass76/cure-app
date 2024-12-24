@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Subject;
 use App\Models\Code;
 use App\Exceptions\ModelNotFoundException;
+use DB;
 
 class SubjectRepository
 {
@@ -50,5 +51,15 @@ class SubjectRepository
     public function delete(Subject $subject)
     {
         return $subject->delete();
+    }
+
+    public function countUsersBySubject()
+    {
+        return Subject::join('code_subject', 'subjects.id', '=', 'code_subject.subject_id')
+            ->join('codes', 'code_subject.code_id', '=', 'codes.id')
+            ->join('users', 'codes.user_id', '=', 'users.id')
+            ->select('subjects.id as subject_id', 'subjects.name as subject_name', DB::raw('count(distinct users.id) as user_count'))
+            ->groupBy('subjects.id', 'subjects.name')
+            ->get();
     }
 }

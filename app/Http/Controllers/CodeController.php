@@ -60,12 +60,13 @@ public function generateCodes(Request $request)
 
 
     public function assignCodeToUser(Request $request){
-        // echo $request->code;
-
         $code = $request->code;
 
         return $this->codeService->addCodeToUser($code);
+    }
 
+    public function getNumberofUsersInBlock(int $type){
+        return $this->codeService->statistics($type);
     }
 
 

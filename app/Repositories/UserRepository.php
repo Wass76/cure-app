@@ -3,7 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use DB;
+use Crypt;
 
 class UserRepository
 {
@@ -16,8 +17,17 @@ class UserRepository
     {
         return User::create([
             'phoneNumber' => $phoneNumber,
-            'password' => Hash::make($password),
+            'password' => $password,
             'role' => 'client',
         ]);
     }
+
+    public function getAllUserInfo()
+    {
+        return User::with('codes')
+        ->get(['id', 'phoneNumber', 'password']); // Fetch only necessary fields
+    }
+
+
+
 }

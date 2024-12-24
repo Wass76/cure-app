@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\UnauthorizedAccessException;
 use App\Repositories\CodeRepository;
 use App\Exceptions\ModelNotFoundException;
 use Auth;
@@ -72,6 +73,9 @@ class CodeService
             throw new AuthenticationException("There is no authenticated user");
         }
         try{
+            if($user->role == 'admin'){
+                throw new UnauthorizedAccessException("admin can't assign codes");
+            }
             $objectCode = $this->codeRepository->findValidCode($code);
             $this->codeRepository->assignCodeToUser($objectCode, $user->id);
 
@@ -81,13 +85,20 @@ class CodeService
                 ]
                 );
         }
+        catch(UnauthorizedAccessException $e){
+            throw new UnauthorizedAccessException("admin can't assign codes");
+        }
         catch (Exception $e) {
             throw new Exception("Failed Assign Code To User" . $e->getMessage(), 500);
         }
     }
 
 
-
+    public function statistics(int $type){
+        return response()->json([
+            "number of users in block " . $type => $this->codeRepository->statistics($type)
+        ]);
+    }
 
 
     public function updateCode($id, array $data)

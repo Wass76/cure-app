@@ -38,4 +38,10 @@ class LectureRepository
     {
         return $lecture->delete();
     }
+
+    public function countLecturesBySubject(int $subjectId)
+    {
+        // Count lectures by subject_id
+        return Lecture::where('subject_id', $subjectId)->count();
+    }
 }
