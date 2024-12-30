@@ -98,7 +98,18 @@ class LectureService
     public function createLecture(array $data)
     {
         try {
-            return $this->lectureRepository->create($data);
+            $lecture= $this->lectureRepository->create($data);
+            $audioLecture = $lecture->audioLecture;
+            $pdfLecture = $lecture->pdfLecture;
+            return [
+                'id' => $lecture->id,
+                'name' => $lecture->name,
+                'subject_id' => $lecture->subject_id,
+                'audioLectureId' => $audioLecture?->id,
+                'audioLectureDownloadLink' => $audioLecture ? route('api.lectures.audio-lectures.download', ['id' => $audioLecture->id]) : null,
+                'pdfLectureId' => $pdfLecture?->id,
+                'pdfLectureDownloadLink' => $pdfLecture ? route('api.lectures.pdf-lectures.download', ['id' => $pdfLecture->id]) : null,
+            ];
         } catch (Exception $e) {
             throw new Exception("Failed to create lecture: " . $e->getMessage(), 500);
         }
