@@ -29,9 +29,22 @@ class SubjectService
     }
 
     public function getAllSubjects()
-    {
-        return $this->subjectRepository->getAll();
-    }
+{
+    $subjects = $this->subjectRepository->getAll();
+
+    // Add lecture count to each subject
+    return $subjects->map(function ($subject) {
+        return [
+            'id' => $subject->id,
+            'name' => $subject->name,
+            'type' => $subject->type,
+            'countOfLectures' => $this->lectureRepository->countLecturesBySubject($subject->id),
+            'created_at' => $subject->created_at,
+            'updated_at' => $subject->updated_at
+        ];
+    });
+}
+
 
     public function getSubjectById($id)
     {
@@ -52,20 +65,33 @@ class SubjectService
     // LectureService.php
 
     public function getSubjectsForUser()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        if (!$user) {
-            throw new AuthenticationException("There is no authenticated user");
-        }
-
-        // Fetch the subjects associated with the user's codes without duplicates
-        $subjects = $this->subjectRepository->getSubjectsByUserCodes($user->id);
-
-        return response()->json([
-            'subjects' => $subjects
-        ]);
+    if (!$user) {
+        throw new AuthenticationException("There is no authenticated user");
     }
+
+    // Fetch the subjects associated with the user's codes without duplicates
+    $subjects = $this->subjectRepository->getSubjectsByUserCodes($user->id);
+
+    // Add lecture count to each subject
+    $subjectsWithLectureCount = $subjects->map(function ($subject) {
+        return [
+            'id' => $subject->id,
+            'name' => $subject->name,
+            'type' => $subject->type,
+            'countOfLectures' => $this->lectureRepository->countLecturesBySubject($subject->id),
+            'created_at' => $subject->created_at,
+            'updated_at' => $subject->updated_at
+        ];
+    });
+
+    return response()->json([
+        'subjects' => $subjectsWithLectureCount
+    ]);
+}
+
 
 
 
