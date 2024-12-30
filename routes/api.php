@@ -42,13 +42,12 @@ Route::prefix('v1')->group(function () {
 
 
     // Route::post('login' , [AuthController::class , 'registerOrLogin']);
-    Route::get('subjects', [SubjectController::class, 'index']);
-    Route::post('codes', [CodeController::class, 'generateCodes']);
-    Route::get("users-in-blocks/{id}" , action: [CodeController::class , "getNumberofUsersInBlock"] );
-    Route::get("all-users" , [AuthController::class , "getAllUserInfo"]);
 
 
     Route::middleware('auth:api')->group(function () {
+
+        Route::get("all-users" , [AuthController::class , "getAllUserInfo"]);
+
 
     // Routes for Code
     Route::get('codes', [CodeController::class, 'index']);
@@ -56,13 +55,16 @@ Route::prefix('v1')->group(function () {
     Route::get('codes/{id}', [CodeController::class, 'show']);
     Route::put('codes/{id}', [CodeController::class, 'update']);
     Route::delete('codes/{id}', [CodeController::class, 'destroy']);
+    Route::post('codes', [CodeController::class, 'generateCodes']);
+    Route::get("users-in-blocks/{id}" , action: [CodeController::class , "getNumberofUsersInBlock"] );
+
 
 
     // Routes for Subjects
     Route::post('subjects', [SubjectController::class, 'store']);
     Route::get('subjects/by-codes' , [SubjectController::class , 'getSubjectsForUser']);
     Route::get("subjects/number-of-user" , [SubjectController::class , "getUserCountBySubject"]);
-
+    Route::get('subjects', [SubjectController::class, 'index']);
     Route::get('subjects/{id}', [SubjectController::class, 'show']);
     Route::put('subjects/{id}', [SubjectController::class, 'update']);
     Route::delete('subjects/{id}', [SubjectController::class, 'destroy']);

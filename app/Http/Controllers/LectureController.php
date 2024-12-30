@@ -39,7 +39,6 @@ class LectureController extends Controller
     public function getBySubjectId($subjectId){
 
         return response()->json($this->lectureService->getLecturesBySubject($subjectId));
-
     }
 
     public function createLecture(Request $request)
@@ -52,26 +51,6 @@ class LectureController extends Controller
         $lecture = $this->lectureService->createLecture($data);
         return response()->json($lecture, 201);
     }
-
-    // public function addAudioLecture(Request $request, $lectureId)
-    // {
-    //     $request->validate([
-    //         'audio_file' => 'required|file|mimes:mp3,wav,aac' // Adjust allowed formats as needed
-    //     ]);
-
-    //     $audioLecture = $this->lectureService->addAudioLecture($lectureId, $request->file('audio_file'));
-    //     return response()->json($audioLecture, 201);
-    // }
-
-// public function addPdfLecture(Request $request, $lectureId)
-//     {
-//         $request->validate([
-//             'pdf_file' => 'required|file|mimes:pdf'
-//         ]);
-
-//         $pdfLecture = $this->lectureService->addPdfLecture($lectureId, $request->file('pdf_file'));
-//         return response()->json($pdfLecture, 201);
-//     }
 
 public function getLectureCount(Request $request, $subjectId)
 {

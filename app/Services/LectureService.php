@@ -55,11 +55,25 @@ class LectureService
     public function getLectureById($id)
     {
         $lecture = $this->lectureRepository->findById($id);
+
         if (!$lecture) {
             throw new ModelNotFoundException("Lecture with ID {$id} not found.");
         }
-        return $lecture;
+
+        $audioLecture = $lecture->audioLecture;
+        $pdfLecture = $lecture->pdfLecture;
+
+        return [
+            'id' => $lecture->id,
+            'name' => $lecture->name,
+            'subject_id' => $lecture->subject_id,
+            'audioLectureId' => $audioLecture?->id,
+            'audioLectureDownloadLink' => $audioLecture ? route('api.lectures.audio-lectures.download', ['id' => $audioLecture->id]) : null,
+            'pdfLectureId' => $pdfLecture?->id,
+            'pdfLectureDownloadLink' => $pdfLecture ? route('api.lectures.pdf-lectures.download', ['id' => $pdfLecture->id]) : null,
+        ];
     }
+
 
     // public function createLecture(array $data)
     // {
@@ -89,41 +103,6 @@ class LectureService
             throw new Exception("Failed to create lecture: " . $e->getMessage(), 500);
         }
     }
-
-    // Add an audio file to an existing Lecture
-    // public function addAudioLecture(int $lectureId, $file)
-    // {
-    //     try {
-    //         $lecture = $this->lectureRepository->findById($lectureId);
-    //         if (!$lecture) throw new ModelNotFoundException("Lecture not found.");
-
-    //         // Generate a unique file name and store the file
-    //         $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-    //         $path = $file->storeAs('public/audio_lectures', $fileName);
-
-    //         // Calculate file size
-    //         $fileSize = Storage::size($path);
-
-    //         // Calculate duration using getID3
-    //         $getID3 = new getID3();
-    //         $fileInfo = $getID3->analyze(storage_path('app/' . $path));
-    //         $duration = $fileInfo['playtime_seconds'] ?? 0;
-
-    //         // Create the AudioLecture record
-    //         return $this->audioLectureRepository->create([
-    //             'file_name' => $fileName,
-    //             'file_size' => $fileSize,
-    //             'duration' => $duration,
-    //             'lecture_id' => $lectureId
-    //         ]);
-    //     } catch (ModelNotFoundException $e) {
-    //         throw new Exception($e->getMessage(), 404);
-    //     } catch (Exception $e) {
-    //         throw new Exception("Failed to add audio lecture: " . $e->getMessage(), 500);
-    //     }
-    // }
-
-
 
     public function getLectureCountForSubject(int $subjectId)
     {

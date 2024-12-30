@@ -118,12 +118,6 @@ public function addPdfLecture(int $lectureId, $file)
         }
     }
 
-
-    // public function createPdfLecture(array $data)
-    // {
-    //     return $this->pdfLectureRepository->create($data);
-    // }
-
     public function updatePdfLecture($id, $file , $lectureId)
     {
         try {

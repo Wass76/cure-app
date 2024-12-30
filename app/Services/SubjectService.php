@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Repositories\CodeRepository;
+use App\Repositories\LectureRepository;
 use App\Repositories\SubjectRepository;
 use App\Exceptions\ModelNotFoundException;
 use App\Models\Code;
@@ -14,11 +15,17 @@ class SubjectService
 {
     protected $subjectRepository;
     protected $codeRepository;
+    protected $lectureRepository;
 
-    public function __construct(SubjectRepository $subjectRepository , CodeRepository $codeRepository)
+    public function __construct(
+        SubjectRepository $subjectRepository ,
+         CodeRepository $codeRepository ,
+          LectureRepository $lectureRepository
+          )
     {
         $this->subjectRepository = $subjectRepository;
         $this->codeRepository = $codeRepository;
+        $this->lectureRepository = $lectureRepository;
     }
 
     public function getAllSubjects()
@@ -32,7 +39,14 @@ class SubjectService
         if (!$subject) {
             throw new ModelNotFoundException("Subject with ID {$id} not found.");
         }
-        return $subject;
+        return [
+            'id' => $subject->id,
+            'name' => $subject->name,
+            'type' => $subject->type,
+            'countOfLectures' => $this->lectureRepository->countLecturesBySubject($subject->id),
+            'created_at' => $subject->created_at,
+            'updated_at' => $subject->updated_at
+        ];
     }
 
     // LectureService.php
